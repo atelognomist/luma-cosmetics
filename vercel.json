@@ -7,7 +7,7 @@
       "has": [
         {
           "type": "host",
-          "value": "admin.luma-cosmetics.com"
+          "value": "(?i).*admin.*"
         }
       ],
       "destination": "/admin.html"
