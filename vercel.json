@@ -7,7 +7,7 @@
       "has": [
         {
           "type": "host",
-          "value": "(?i).*admin.*"
+          "value": ".*admin.*"
         }
       ],
       "destination": "/admin.html"
