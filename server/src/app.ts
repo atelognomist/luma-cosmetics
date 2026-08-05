@@ -18,6 +18,9 @@ import { requireCsrfValidation } from "./middleware/csrf.js";
 
 export const app = express();
 
+// Trust proxy for Render's load balancers (required for Secure cookies and rate limiting)
+app.set("trust proxy", 1);
+
 // Security middleware
 app.use(helmet());
 
