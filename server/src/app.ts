@@ -14,6 +14,7 @@ import productsRoutes from "./routes/products.routes.js";
 import ordersRoutes from "./routes/orders.routes.js";
 import categoriesRoutes from "./routes/categories.routes.js";
 import campaignsRoutes from "./routes/campaigns.routes.js";
+import { requireCsrfValidation } from "./middleware/csrf.js";
 
 export const app = express();
 
@@ -21,18 +22,19 @@ export const app = express();
 app.use(helmet());
 
 // CORS configuration (allow credentials for cookies)
-const allowedOrigins = process.env.NODE_ENV === "production" 
-  ? [
-      "https://luma-cosmetics.com",
-      "https://www.luma-cosmetics.com",
-      "https://admin.luma-cosmetics.com"
-    ]
-  : [
-      "https://luma-cosmetics.com",
-      "https://www.luma-cosmetics.com",
-      "https://admin.luma-cosmetics.com",
-      "http://localhost:5173"
-    ];
+if (process.env.NODE_ENV === "production") {
+  if (!process.env.FRONTEND_URL) throw new Error("FRONTEND_URL is required in production environment");
+  if (!process.env.ADMIN_FRONTEND_URL) throw new Error("ADMIN_FRONTEND_URL is required in production environment");
+  if (!process.env.COOKIE_SAME_SITE) throw new Error("COOKIE_SAME_SITE is required in production environment");
+}
+
+const allowedOrigins: string[] = [];
+if (process.env.FRONTEND_URL) allowedOrigins.push(process.env.FRONTEND_URL);
+if (process.env.ADMIN_FRONTEND_URL) allowedOrigins.push(process.env.ADMIN_FRONTEND_URL);
+
+if (process.env.NODE_ENV !== "production") {
+  allowedOrigins.push("http://localhost:5173");
+}
 
 app.use(
   cors({
@@ -48,6 +50,13 @@ if (process.env.NODE_ENV === "production" && !sessionSecret) {
   throw new Error("SESSION_SECRET is required in production environment");
 }
 
+const cookieSameSite =
+  process.env.COOKIE_SAME_SITE === "none" ||
+  process.env.COOKIE_SAME_SITE === "strict" ||
+  process.env.COOKIE_SAME_SITE === "lax"
+    ? process.env.COOKIE_SAME_SITE
+    : "lax";
+
 app.use(
   session({
     secret: sessionSecret || "development_fallback_secret",
@@ -60,8 +69,8 @@ app.use(
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 1000 * 60 * 60 * 24, // 1 day
-      sameSite: process.env.NODE_ENV === "production" ? "lax" : "lax", // Lax preferred as requested
-      domain: process.env.NODE_ENV === "production" ? ".luma-cosmetics.com" : undefined,
+      sameSite: cookieSameSite,
+      domain: process.env.COOKIE_DOMAIN || undefined,
     },
   })
 );
@@ -78,6 +87,9 @@ const orderLimiter = rateLimit({
   max: 10,
   message: { error: { code: "TOO_MANY_REQUESTS", message: "Trop de commandes créées, veuillez réessayer plus tard" } }
 });
+
+// CSRF Protection
+app.use(requireCsrfValidation);
 
 // Routes
 app.use("/api/auth/login", loginLimiter);
