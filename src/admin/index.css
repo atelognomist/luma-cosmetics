@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:ital,wght@0,300;0,400;0,500&display=swap');
+@import 'tailwindcss';
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-sidebar-bg: var(--sidebar-bg);
+  --color-sidebar-fg: var(--sidebar-fg);
+  --radius-md: var(--radius);
+}
+
+:root {
+  --background: #F6F4F1;
+  --foreground: #1C1917;
+  --card: #FFFFFF;
+  --card-foreground: #1C1917;
+  --primary: #B07D56;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F0EDE8;
+  --secondary-foreground: #44403C;
+  --muted: #EAE7E2;
+  --muted-foreground: #7C756D;
+  --accent: #B07D56;
+  --accent-foreground: #FFFFFF;
+  --border: #DDD8D2;
+  --ring: #B07D56;
+  --radius: 5px;
+
+  --sidebar-bg: #1A1714;
+  --sidebar-fg: #CEC9C3;
+  --sidebar-muted: #6B6560;
+  --sidebar-active-bg: #252220;
+  --sidebar-active-fg: #E8C99A;
+  --sidebar-hover: #211E1C;
+  --sidebar-border: #2A2624;
+
+  --status-new-bg: #EFF6FF;
+  --status-new-fg: #1D4ED8;
+  --status-calling-bg: #F5F3FF;
+  --status-calling-fg: #6D28D9;
+  --status-confirmed-bg: #ECFDF5;
+  --status-confirmed-fg: #065F46;
+  --status-preparing-bg: #FFFBEB;
+  --status-preparing-fg: #92400E;
+  --status-ready-bg: #ECFEFF;
+  --status-ready-fg: #155E75;
+  --status-sent-bg: #EFF6FF;
+  --status-sent-fg: #1E40AF;
+  --status-delivered-bg: #F0FDF4;
+  --status-delivered-fg: #14532D;
+  --status-rejected-bg: #FEF2F2;
+  --status-rejected-fg: #991B1B;
+  --status-no-answer-bg: #FFFBEB;
+  --status-no-answer-fg: #92400E;
+  --status-cancelled-bg: #F9FAFB;
+  --status-cancelled-fg: #374151;
+  --status-returned-bg: #FFF7ED;
+  --status-returned-fg: #7C2D12;
+  --status-failed-bg: #FEF2F2;
+  --status-failed-fg: #991B1B;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background-color: var(--background);
+  color: var(--foreground);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-serif {
+  font-family: 'DM Serif Display', Georgia, serif;
+}
+
+.font-mono {
+  font-family: 'DM Mono', 'Courier New', monospace;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
+
+/* Sidebar scrollbar */
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: var(--sidebar-border);
+}
