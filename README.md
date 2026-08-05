@@ -1,7 +1,7 @@
 
   # User dashboard
 
-  This is a code bundle for User dashboard, The original project is available at https://www.figma.com/design/9NbXGqzQVHd0aM0CStGnLT/User-dashboard.
+  this is a code bundle for User dashboard, The original project is available at https://www.figma.com/design/9NbXGqzQVHd0aM0CStGnLT/User-dashboard.
 
   ## Running the code
 
