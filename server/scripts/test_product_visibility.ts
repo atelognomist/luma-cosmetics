@@ -1,6 +1,6 @@
 import crypto from "crypto";
 
-const BASE_URL = "http://localhost:5000/api";
+const BASE_URL = "https://luma-cosmetics.onrender.com/api";
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@luma.dz";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "2N2KdtPc0619!"; 
 
