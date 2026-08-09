@@ -27,7 +27,7 @@ export default function Campaigns() {
   });
 
   useEffect(() => {
-    Promise.all([getCampaigns(), getProducts()]).then(([cData, pData]) => {
+    Promise.all([getCampaigns(), getProducts({ adminAll: true })]).then(([cData, pData]) => {
       setCampaigns(cData);
       setProducts(pData);
       setLoading(false);

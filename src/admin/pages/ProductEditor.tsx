@@ -43,13 +43,13 @@ export default function ProductEditor() {
 
   useEffect(() => {
     if (isNew) return;
-    getProduct(id!).then(data => {
+    getProduct(id!, { adminAll: true }).then(data => {
       if (data) {
         setExisting(data);
         setForm({
           name: data.name,
-          brand: data.brand,
-          category: data.category,
+          brand: data.brand || "LUMA",
+          category: data.category || "",
           subcategory: data.subcategory || "",
           description: data.description || "",
           price: data.price,
@@ -57,10 +57,10 @@ export default function ProductEditor() {
           stock: data.stock || 0,
           lowStockThreshold: data.lowStockThreshold || 10,
           status: data.status,
-          bestSeller: data.flags.bestSeller || false,
-          newArrival: data.flags.newArrival || false,
-          featured: data.flags.featured || false,
-          onSale: data.flags.onSale || false,
+          bestSeller: data.flags?.bestSeller || false,
+          newArrival: data.flags?.newArrival || false,
+          featured: data.flags?.featured || false,
+          onSale: data.flags?.onSale || false,
           benefits: data.benefits || "",
           ingredients: data.ingredients || "",
           howToUse: data.howToUse || "",

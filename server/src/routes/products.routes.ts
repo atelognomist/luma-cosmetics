@@ -12,9 +12,12 @@ const router = Router();
 router.get("/", async (req, res) => {
   try {
     const filter: any = {};
-    // Storefront queries usually want published only, Admin wants all
-    if (!req.session?.userId) {
-      filter.status = "published";
+    
+    // Only return all products if requested by an admin via ?admin=true query parameter
+    if (req.query.admin === "true" && req.session?.userId) {
+       // admin wants all, don't filter by status
+    } else {
+       filter.status = "published";
     }
     
     // Support category filter
@@ -39,7 +42,9 @@ router.get("/:id", async (req, res) => {
     if (!product) return res.status(404).json({ error: { code: "NOT_FOUND", message: "Produit non trouvé" } });
     
     // Storefront logic
-    if (!req.session?.userId && product.status !== "published") {
+    if (req.query.admin === "true" && req.session?.userId) {
+       // Admin allowed to see archived products
+    } else if (product.status !== "published") {
       return res.status(404).json({ error: { code: "NOT_FOUND", message: "Produit non trouvé" } });
     }
     

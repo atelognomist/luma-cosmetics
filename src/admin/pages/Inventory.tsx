@@ -7,6 +7,7 @@ import type { Product } from "@/lib/api/types";
 type StockFilter = "all" | "in_stock" | "low" | "out";
 
 function stockStatus(p: Product): { label: string; css: string } {
+  if (p.status === "archived") return { label: "Archivé", css: "bg-gray-100 text-gray-700 border border-gray-200" };
   if (p.stock === 0) return { label: "Rupture", css: "bg-red-50 text-red-700 border border-red-200" };
   if (p.stock <= p.lowStockThreshold) return { label: "Stock faible", css: "bg-amber-50 text-amber-700 border border-amber-200" };
   return { label: "En stock", css: "bg-green-50 text-green-700 border border-green-200" };
@@ -19,7 +20,7 @@ export default function Inventory() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getProducts().then((data) => {
+    getProducts({ adminAll: true }).then((data) => {
       setProducts(data);
       setLoading(false);
     });

@@ -17,7 +17,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([getOrders(), getProducts()]).then(([oData, pData]) => {
+    Promise.all([getOrders(), getProducts({ adminAll: true })]).then(([oData, pData]) => {
       setOrders(oData);
       setProducts(pData);
       setLoading(false);

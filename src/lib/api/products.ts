@@ -28,14 +28,16 @@ function normalizeProduct(p: any): Product {
   return p as Product;
 }
 
-export async function getProducts(): Promise<Product[]> {
-  const products = await ApiClient.get<Product[]>("/products");
+export async function getProducts(options?: { adminAll?: boolean }): Promise<Product[]> {
+  const qs = options?.adminAll ? "?admin=true" : "";
+  const products = await ApiClient.get<Product[]>(`/products${qs}`);
   return products.map(normalizeProduct);
 }
 
-export async function getProduct(id: string): Promise<Product | null> {
+export async function getProduct(id: string, options?: { adminAll?: boolean }): Promise<Product | null> {
   try {
-    const product = await ApiClient.get<Product>(`/products/${id}`);
+    const qs = options?.adminAll ? "?admin=true" : "";
+    const product = await ApiClient.get<Product>(`/products/${id}${qs}`);
     return normalizeProduct(product);
   } catch (error) {
     return null;

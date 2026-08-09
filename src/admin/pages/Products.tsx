@@ -35,7 +35,7 @@ export default function Products() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getProducts().then((data) => {
+    getProducts({ adminAll: true }).then((data) => {
       setProducts(data);
       setLoading(false);
     });
