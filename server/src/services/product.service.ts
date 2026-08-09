@@ -72,4 +72,10 @@ export class ProductService {
     if (!product) throw new Error("Product not found");
     return product;
   }
+
+  static async deleteProduct(id: string) {
+    // Soft delete recommended
+    const product = await Product.findByIdAndUpdate(id, { status: "archived" }, { new: true });
+    return product;
+  }
 }

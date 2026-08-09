@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
-import { connectDB } from "../src/config/db";
+import { app } from "../src/app.js";
+import { connectDB } from "../src/config/db.js";
+import mongoose from "mongoose";
 import { Product } from "../src/models/Product";
 import { Order } from "../src/models/Order";
 import { User } from "../src/models/User";
@@ -32,8 +34,9 @@ async function fetchAPI(endpoint: string, options: RequestInit = {}, cookie: str
 }
 
 async function runTests() {
-  console.log("\n🚀 Starting E2E Security & Hardening Tests\n");
-  await connectDB();
+  const mongoUri = process.env.MONGODB_URI;
+  if (!mongoUri) throw new Error("MONGODB_URI not set in .env");
+  await mongoose.connect(mongoUri);
 
   try {
     // 1. AUTHENTICATION & RATE LIMIT TEST

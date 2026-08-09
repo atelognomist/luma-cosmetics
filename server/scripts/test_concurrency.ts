@@ -1,6 +1,8 @@
 import dotenv from "dotenv";
 import { connectDB } from "../src/config/db";
-import { Product } from "../src/models/Product";
+import { Product } from "../src/models/Product.js";
+import { Order } from "../src/models/Order.js";
+import mongoose from "mongoose";
 import crypto from "crypto";
 
 dotenv.config();
@@ -23,7 +25,9 @@ async function fetchAPI(endpoint: string, options: RequestInit = {}) {
 
 async function runConcurrencyTest() {
   console.log("\n🚀 Starting E2E Concurrency & Idempotency Test\n");
-  await connectDB();
+  const mongoUri = process.env.MONGODB_URI;
+  if (!mongoUri) throw new Error("MONGODB_URI not set in .env");
+  await mongoose.connect(mongoUri);
 
   // Create test product with exactly 1 stock
   const p1 = new Product({

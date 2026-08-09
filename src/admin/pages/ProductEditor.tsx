@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import { formatPrice } from "../lib/data";
-import { getProduct, updateProduct, createProduct } from "@/lib/api/products";
+import { getProduct, updateProduct, createProduct, deleteProduct } from "@/lib/api/products";
 import type { Product, ProductMedia } from "@/lib/api/types";
 import { ArrowUp, ArrowDown, Trash2, Image as ImageIcon, Video, Star } from "lucide-react";
 
@@ -39,6 +39,7 @@ export default function ProductEditor() {
 
   const [saved, setSaved] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   useEffect(() => {
     if (isNew) return;
@@ -153,6 +154,13 @@ export default function ProductEditor() {
     }
   }
 
+  async function handleDeleteProduct() {
+    if (!id || isNew) return;
+    setLoading(true);
+    await deleteProduct(id);
+    navigate("/products");
+  }
+
   if (loading) return <div className="p-8 text-muted-foreground text-sm">Chargement...</div>;
 
   return (
@@ -175,6 +183,16 @@ export default function ProductEditor() {
           <span className="text-xs font-medium px-2.5 py-1 rounded" style={{ backgroundColor: "#ECFDF5", color: "#065F46", border: "1px solid #6EE7B7" }}>
             Enregistré
           </span>
+        )}
+        {!isNew && (
+          <button
+            onClick={() => setShowDeleteConfirm(true)}
+            type="button"
+            className="p-2 rounded hover:bg-muted text-destructive transition-colors"
+            title="Supprimer le produit"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
         )}
         <button
           onClick={handleSave}
@@ -538,6 +556,41 @@ export default function ProductEditor() {
         }
         .input-base:focus { border-color: var(--primary); }
       `}</style>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center px-4"
+          style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
+          onClick={(e) => e.target === e.currentTarget && setShowDeleteConfirm(false)}
+        >
+          <div
+            className="bg-card rounded-lg w-full max-w-[400px] p-6"
+            style={{ border: "1px solid var(--border)", boxShadow: "0 8px 32px rgba(0,0,0,0.16)" }}
+          >
+            <h3 className="font-semibold text-lg text-foreground mb-2">Supprimer le produit ?</h3>
+            <p className="text-sm mb-6" style={{ color: "var(--muted-foreground)" }}>
+              Êtes-vous sûr de vouloir supprimer "{existing?.name}" ? Cette action est irréversible (le produit sera archivé).
+            </p>
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowDeleteConfirm(false)}
+                className="px-4 py-2 rounded text-sm"
+                style={{ border: "1px solid var(--border)", color: "var(--muted-foreground)" }}
+              >
+                Annuler
+              </button>
+              <button
+                onClick={handleDeleteProduct}
+                className="px-4 py-2 rounded text-sm font-medium transition-opacity"
+                style={{ backgroundColor: "#DC2626", color: "#fff" }}
+              >
+                Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

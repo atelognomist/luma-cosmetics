@@ -63,3 +63,7 @@ export async function addOrderCall(id: string, call: CallAttempt): Promise<Order
   const updatedOrder = await ApiClient.post<Order>(`/orders/${id}/calls`, call);
   return normalizeOrder(updatedOrder);
 }
+
+export async function deleteOrder(id: string): Promise<void> {
+  await ApiClient.delete(`/orders/${id}`);
+}

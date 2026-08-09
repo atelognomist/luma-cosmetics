@@ -169,7 +169,8 @@ export class OrderService {
       try {
         return await this._updateOrderStatusTx(order, status, true);
       } catch (error: any) {
-        if (error.message && error.message.includes("replica set")) {
+        const errorString = (error.message || "") + " " + (error.errmsg || "") + " " + JSON.stringify(error);
+        if (errorString.toLowerCase().includes("replica set") || errorString.toLowerCase().includes("retryable writes")) {
           if (process.env.NODE_ENV === "production") {
             throw new Error("Production transactions are REQUIRED.");
           }
@@ -222,5 +223,10 @@ export class OrderService {
       }
       throw err;
     }
+  }
+
+  static async deleteOrder(id: string) {
+    // Hard delete without restoring stock (stock restoration requires explicit cancellation)
+    return await Order.findByIdAndDelete(id);
   }
 }

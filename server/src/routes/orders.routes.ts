@@ -4,6 +4,7 @@ import { OrderService } from "../services/order.service.js";
 import { requireStaff } from "../middleware/auth.js";
 import { validate } from "../middleware/validate.js";
 import { CreateOrderSchema, UpdateOrderStatusSchema, AddOrderCallSchema } from "../validators/order.validator.js";
+import mongoose from "mongoose";
 
 const router = Router();
 
@@ -31,6 +32,9 @@ router.get("/", requireStaff, async (req, res) => {
 // Admin: Get order by ID
 router.get("/:id", requireStaff, async (req, res) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: { code: "BAD_REQUEST", message: "ID invalide" } });
+    }
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ error: { code: "NOT_FOUND", message: "Commande non trouvée" } });
     res.json({ data: order });
@@ -42,6 +46,9 @@ router.get("/:id", requireStaff, async (req, res) => {
 // Admin: Update order status
 router.patch("/:id/status", requireStaff, validate(UpdateOrderStatusSchema), async (req, res) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: { code: "BAD_REQUEST", message: "ID invalide" } });
+    }
     const order = await OrderService.updateOrderStatus(req.params.id as string, req.body.status, req.session.userId!);
     res.json({ data: order });
   } catch (err: any) {
@@ -52,6 +59,9 @@ router.patch("/:id/status", requireStaff, validate(UpdateOrderStatusSchema), asy
 // Admin: Add call attempt
 router.post("/:id/calls", requireStaff, validate(AddOrderCallSchema), async (req, res) => {
   try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: { code: "BAD_REQUEST", message: "ID invalide" } });
+    }
     const order = await Order.findById(req.params.id);
     if (!order) return res.status(404).json({ error: { code: "NOT_FOUND", message: "Commande non trouvée" } });
 
@@ -70,6 +80,20 @@ router.post("/:id/calls", requireStaff, validate(AddOrderCallSchema), async (req
     
     await order.save();
     res.json({ data: order });
+  } catch (err) {
+    res.status(500).json({ error: { code: "SERVER_ERROR", message: "Erreur serveur" } });
+  }
+});
+
+// Admin: Delete order
+router.delete("/:id", requireStaff, async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ error: { code: "BAD_REQUEST", message: "ID invalide" } });
+    }
+    const order = await OrderService.deleteOrder(req.params.id as string);
+    if (!order) return res.status(404).json({ error: { code: "NOT_FOUND", message: "Commande non trouvée" } });
+    res.json({ data: { success: true } });
   } catch (err) {
     res.status(500).json({ error: { code: "SERVER_ERROR", message: "Erreur serveur" } });
   }
